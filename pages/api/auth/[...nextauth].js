@@ -18,7 +18,7 @@ export default NextAuth({
         const user = await usersCollection.findOne({
           email: credentials.email,
         });
-        console.log(user);
+       
         if (!user) throw new Error('No user found');
 
         const isValid = await comparePassword(
