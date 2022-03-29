@@ -20,13 +20,22 @@ const handler = async (req, res) => {
 
   const db = connection.db();
 
-  const hashedPassword = hashPassword(password);
+  const existingUser = await db.collection('users').findOne({ email: email });
+
+  if (existingUser) {
+    res.status(422).json({ message: 'The user already exists' });
+    connection.close();
+    return;
+  }
+
+  const hashedPassword = await hashPassword(password);
 
   const collection = await db.collection('users').insertOne({
     email,
     hashedPassword,
   });
   res.status(201).json({ message: 'User created' });
+  connection.close();
 };
 
 export default handler;
